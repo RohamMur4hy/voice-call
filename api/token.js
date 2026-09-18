@@ -14,7 +14,8 @@ function cleanName(value) {
 
 function createToken({ appId, apiKey, privateKey, room, name }) {
   const now = Math.floor(Date.now() / 1000);
-  const header = { typ: 'JWT', alg: 'RS256', kid: `${appId}/${apiKey}` };
+  const keyId = apiKey.startsWith(`${appId}/`) ? apiKey.slice(appId.length + 1) : apiKey;
+  const header = { typ: 'JWT', alg: 'RS256', kid: `${appId}/${keyId}` };
   const payload = {
     aud: 'jitsi',
     iss: 'chat',
@@ -32,7 +33,7 @@ function createToken({ appId, apiKey, privateKey, room, name }) {
   const signer = crypto.createSign('RSA-SHA256');
   signer.update(`${encodedHeader}.${encodedPayload}`);
   signer.end();
-  const signature = signer.sign(privateKey);
+  const signature = signer.sign(privateKey.replace(/\\n/g, '\n').trim());
   return `${encodedHeader}.${encodedPayload}.${base64Url(signature)}`;
 }
 
@@ -41,13 +42,16 @@ export default function handler(request, response) {
   const appId = process.env.JAAS_APP_ID;
   const apiKey = process.env.JAAS_API_KEY;
   const privateKey = process.env.JAAS_PRIVATE_KEY;
-  if (!appId || !apiKey || !privateKey) return response.status(500).json({ error: 'تنظیمات JaaS روی سرور کامل نیست.' });
+  const missing = ['JAAS_APP_ID', 'JAAS_API_KEY', 'JAAS_PRIVATE_KEY'].filter(name => !process.env[name]);
+  if (missing.length) return response.status(500).json({ error: `این تنظیمات Vercel وجود ندارد: ${missing.join('، ')}` });
   const room = cleanRoom(request.body?.room);
   const name = cleanName(request.body?.name);
   if (!room) return response.status(400).json({ error: 'شناسه اتاق معتبر نیست.' });
   try {
     return response.status(200).json({ token: createToken({ appId, apiKey, privateKey, room, name }) });
-  } catch {
-    return response.status(500).json({ error: 'توکن اتصال ساخته نشد.' });
+  } catch (error) {
+    const message = String(error?.message || '');
+    if (message.includes('PEM') || message.includes('key')) return response.status(500).json({ error: 'فرمت JAAS_PRIVATE_KEY معتبر نیست؛ کلید را کامل با BEGIN و END در Vercel وارد کن.' });
+    return response.status(500).json({ error: 'توکن اتصال ساخته نشد؛ API Key و Private Key باید از یک کلید JaaS باشند.' });
   }
 }
