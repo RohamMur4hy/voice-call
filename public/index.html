@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="آوا، اتاق گفت‌وگوی صوتی گروهی">
+  <title>آوا | گفت‌وگوی صوتی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Estedad:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main id="home-view" class="view home-view">
+      <div class="home-copy">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="eyebrow">گفت‌وگوی صوتی آرام و واقعی</p>
+        <h1>آوا</h1>
+        <p class="hero-text">اتاق صوتی خودت را بساز و با دوستانت صحبت کن.</p>
+        <div class="home-actions">
+          <button class="button button-primary" id="create-room-button">ساخت اتاق <span>←</span></button>
+          <button class="button button-secondary" id="show-join-button">ورود به اتاق</button>
+        </div>
+        <form id="quick-join-form" class="quick-join-form hidden">
+          <label for="quick-room-code">کد یا لینک اتاق</label>
+          <div class="inline-field"><input id="quick-room-code" autocomplete="off" placeholder="مثلاً 7K4M2P" required><button class="icon-button" title="ادامه" aria-label="ادامه">←</button></div>
+        </form>
+        <p class="home-note"><span class="status-dot"></span> تا ۱۰ نفر، با صدای شفاف و کم‌مصرف</p>
+      </div>
+      <div class="home-art" aria-hidden="true">
+        <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+        <div class="art-core"><span class="core-wave"></span><span class="core-wave wave-two"></span><span class="core-wave wave-three"></span></div>
+        <div class="art-caption"><strong>همین‌جا، همین حالا</strong><span>تماس صوتی واقعی با Jitsi</span></div>
+      </div>
+    </main>
+
+    <section id="lobby-view" class="view modal-view hidden" aria-labelledby="lobby-title">
+      <div class="dialog-card lobby-card">
+        <button class="close-button" data-action="go-home" aria-label="بستن">×</button>
+        <p class="eyebrow">قبل از ورود</p><h2 id="lobby-title">آماده‌ای؟</h2><p class="dialog-intro">یک نام انتخاب کن تا دوستانت تو را بشناسند.</p>
+        <form id="lobby-form">
+          <label for="display-name">نام نمایشی</label><input id="display-name" maxlength="32" placeholder="مثلاً رهام" required>
+          <label for="room-name" id="room-name-label">نام اتاق</label><input id="room-name" maxlength="48" placeholder="مثلاً دورهمی شبانه">
+          <label for="microphone-select">میکروفون</label><select id="microphone-select"><option value="">میکروفون پیش‌فرض</option></select>
+          <p class="permission-note">برای صحبت کردن، مرورگر از تو اجازه دسترسی به میکروفون می‌خواهد. اگر قبلاً ردش کرده‌ای، از تنظیمات سایت آن را روی Allow بگذار.</p>
+          <button class="text-button permission-button" id="permission-button" type="button">فعال‌سازی میکروفون</button>
+          <p id="lobby-error" class="error-message" role="alert"></p>
+          <button class="button button-primary full-button" type="submit" id="lobby-submit">ساخت اتاق <span>←</span></button>
+        </form>
+      </div>
+    </section>
+
+    <section id="room-view" class="view room-view hidden">
+      <header class="room-header">
+        <div class="room-title-wrap"><div class="live-pill"><span class="status-dot"></span> زنده</div><h2 id="room-title">اتاق صوتی</h2><p id="room-subtitle">در حال اتصال...</p></div>
+        <div class="room-header-actions"><button class="text-button" id="share-button">اشتراک‌گذاری <span>↗</span></button><button class="avatar-button" id="profile-button" aria-label="پروفایل"></button></div>
+      </header>
+      <div id="reconnect-banner" class="reconnect-banner hidden">اتصال قطع شد؛ در حال تلاش مجدد...</div>
+      <div class="room-layout">
+        <aside class="room-sidebar">
+          <div class="side-section"><p class="section-label">اتاق فعلی</p><div class="room-code-box"><span id="room-code">------</span><button id="copy-code" title="کپی کد" aria-label="کپی کد">□</button></div></div>
+          <div class="side-section"><p class="section-label">وضعیت اتصال</p><div class="connection-state"><span id="connection-dot" class="status-dot connected"></span><span id="connection-label">متصل</span></div></div>
+          <div class="side-spacer"></div><button class="sidebar-action" id="settings-button">⚙ <span>تنظیمات صدا</span></button><button class="sidebar-leave" id="leave-button">خروج از اتاق</button>
+        </aside>
+        <main class="participants-area"><div class="participants-heading"><div><p class="section-label">حاضران</p><h1 id="participant-count">۰ / ۱۰ نفر</h1></div><p class="participants-hint">صدای شفاف، گفت‌وگوی راحت</p></div><div id="video-tile" class="video-tile"><div id="jitsi-container" class="jitsi-container" aria-hidden="true"></div><button id="video-fullscreen-button" class="video-fullscreen-button" type="button" aria-label="تمام‌صفحه">⤢</button><button id="video-close-button" class="video-close-button" type="button" aria-label="بستن تصویر">✕</button></div><div id="participants-grid" class="participants-grid"></div></main>
+      </div>
+      <div id="stream-banner" class="stream-banner hidden"><span>یکی از اعضا در حال پخش تصویر است</span><button id="enter-stream-button" class="button button-primary">ورود به پخش</button></div>
+      <div class="control-dock">
+          <button class="control-button" id="settings-dock-button" aria-label="تنظیمات صدا"><span>⚙</span><small>تنظیمات</small></button>
+          <button class="control-button control-main" id="mute-button" aria-label="میکروفون"><span>🎙</span><small>میکروفون روشن</small></button>
+          <button class="control-button" id="camera-button" aria-label="دوربین"><span>▣</span><small>دوربین خاموش</small></button>
+          <button class="control-button" id="screen-share-button" aria-label="اشتراک صفحه"><span>▤</span><small>اشتراک صفحه</small></button>
+          <button class="control-button" id="share-dock-button" aria-label="دعوت دوستان"><span>↗</span><small>دعوت</small></button>
+          <button class="control-button control-leave" id="leave-dock-button" aria-label="خروج"><span>↪</span><small>خروج</small></button>
+      </div>
+    </section>
+
+    <div id="settings-panel" class="settings-panel hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-card"><div class="panel-heading"><div><p class="eyebrow">تنظیمات</p><h2 id="settings-title">صدا و میکروفون</h2></div><button class="close-button" id="close-settings" aria-label="بستن">×</button></div><label for="settings-mic">دستگاه ورودی</label><select id="settings-mic"></select><label for="settings-output">دستگاه خروجی</label><select id="settings-output"><option>خروجی پیش‌فرض مرورگر</option></select><label for="input-sensitivity">حساسیت میکروفون <output id="sensitivity-value">۱۰۰٪</output></label><input id="input-sensitivity" type="range" min="50" max="150" value="100"><p class="support-note">انتخاب خروجی صدا در این مرورگر فقط برای برخی دستگاه‌ها پشتیبانی می‌شود.</p></div></div>
+    <div id="leave-confirm" class="settings-panel hidden" role="dialog" aria-modal="true" aria-labelledby="leave-title"><div class="settings-card confirm-card"><p class="eyebrow">خروج از اتاق</p><h2 id="leave-title">مطمئنی می‌خواهی خارج شوی؟</h2><p class="support-note">اتصال صوتی تو قطع می‌شود.</p><div class="confirm-actions"><button class="button button-secondary" id="cancel-leave">انصراف</button><button class="button button-danger" id="confirm-leave">خروج</button></div></div></div>
+    <div id="toast" class="toast" role="status"></div>
+  </div>
+  <script src="/app.js"></script>
+  <script src="/media-controls.js"></script>
+</body>
+</html>
