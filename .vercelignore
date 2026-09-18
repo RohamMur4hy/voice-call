@@ -1,1 +1,6 @@
 node_modules
+.wrangler
+w
+w.zip
+worker.js
+wrangler.jsonc
