@@ -1,0 +1,13 @@
+{
+  "name": "ava-jaas-voice",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "check": "vercel build"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  }
+}
