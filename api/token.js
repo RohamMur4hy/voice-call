@@ -5,7 +5,7 @@ function base64Url(value) {
 }
 
 function cleanRoom(value) {
-  return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+  return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64).toLowerCase();
 }
 
 function cleanName(value) {
